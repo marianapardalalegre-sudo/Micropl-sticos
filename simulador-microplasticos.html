@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratório dos mexilhões: microplásticos</title>
+<style>
+:root{--bg:#eef4f4;--surface:#fff;--ink:#12303a;--muted:#4c6a73;--line:#c5d8db;--accent:#0b7a8a;--accent-ink:#fff;--ok:#1b7a3d;--bad:#b3362b;--warn:#8a5a00;--ctl:#3b7ea1;--exp:#d2792b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1d22;--surface:#142a31;--ink:#e3f0f2;--muted:#9bb8bf;--line:#2b4650;--accent:#4cc2d3;--accent-ink:#06222a;--ok:#6fd392;--bad:#ff8c80;--warn:#f0c060;--ctl:#6fb7dc;--exp:#f0a15f}}
+:root[data-theme="dark"]{--bg:#0d1d22;--surface:#142a31;--ink:#e3f0f2;--muted:#9bb8bf;--line:#2b4650;--accent:#4cc2d3;--accent-ink:#06222a;--ok:#6fd392;--bad:#ff8c80;--warn:#f0c060;--ctl:#6fb7dc;--exp:#f0a15f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Georgia,"Iowan Old Style",serif}
+main{max-width:780px;margin:0 auto;padding:20px 16px 60px}
+h1{font:700 2rem/1.15 "Trebuchet MS",Verdana,sans-serif;margin:8px 0 6px}
+h2{font:700 1.3rem/1.25 "Trebuchet MS",Verdana,sans-serif;margin:0 0 10px}
+p{margin:0 0 10px}
+.sub{color:var(--muted)}
+section{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;margin:18px 0}
+section.locked{opacity:.45;pointer-events:none}
+.q{border-left:4px solid var(--accent);padding:6px 12px;margin:10px 0;font-style:italic}
+button,select{font:600 .95rem "Trebuchet MS",Verdana,sans-serif;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-height:40px}
+button.go{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.fb{grid-column:1/-1;font-size:.9rem;margin:0}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.tanks{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:12px 0}
+.tank{border:2px solid var(--line);border-radius:10px;padding:10px;display:grid;gap:6px;background:var(--bg)}
+.tank b{font-family:"Trebuchet MS",Verdana,sans-serif}
+.tank label{font-size:.85rem;color:var(--muted)}
+.tank select{width:100%}
+.n{display:flex;gap:10px;align-items:center;margin:8px 0;flex-wrap:wrap}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{border:1px solid var(--line);padding:5px 7px;text-align:center}
+th{background:var(--bg)}
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--ink);font:12px "Trebuchet MS",Verdana,sans-serif}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;cursor:pointer}
+.msgs p{margin:6px 0}
+.lv{display:grid;grid-template-columns:44px 1fr 70px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.em{font-size:1.8rem;text-align:center}
+.bar{height:16px;background:var(--bg);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--exp);transition:width .4s}
+.num{font:700 1.1rem "Trebuchet MS",Verdana,sans-serif;text-align:right}
+.cc{display:grid;gap:10px;margin:10px 0}
+.cc label{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<main>
+<h1>Laboratório dos mexilhões</h1>
+<p class="sub">Os mexilhões filtram a água para se alimentarem, por isso engolem tudo o que lá flutua, incluindo microplásticos. Vais planear e simular um estudo.</p>
+<div class="q">Pergunta de investigação: a concentração de microplásticos na água influencia a quantidade de partículas encontradas no sistema digestivo dos mexilhões?</div>
+
+<section id="s1">
+<h2>1. Identifica as variáveis</h2>
+<p>Classifica cada elemento do estudo.</p>
+<div id="vars"></div>
+<p style="margin-top:12px"><button class="go" id="chk1">Verificar</button> <span id="res1" class="sub"></span></p>
+</section>
+
+<section id="s2" class="locked">
+<h2>2. Monta o estudo</h2>
+<p>Tens quatro aquários. Escolhe a concentração de microplásticos (partículas por litro) e classifica cada aquário como grupo de controlo ou grupo experimental.</p>
+<div class="tanks" id="tanks"></div>
+<div class="n"><label for="nm">Mexilhões por aquário: <b id="nmv">5</b></label><input type="range" id="nm" min="1" max="12" value="5"></div>
+<p><button class="go" id="run">Executar experiência (7 dias)</button></p>
+<div class="msgs" id="msgs"></div>
+</section>
+
+<section id="s3" class="locked">
+<h2>3. Resultados</h2>
+<div id="out"><p class="sub">Executa a experiência para veres os dados.</p></div>
+</section>
+
+<section id="s4" class="locked">
+<h2>4. Interpreta</h2>
+<div id="quiz"></div>
+<p><button id="again">Recomeçar com novos mexilhões</button></p>
+</section>
+<section id="s5" class="locked">
+<h2>5. Segue os microplásticos na cadeia alimentar</h2>
+<p>Os mexilhões são comidos pelas douradas, e as douradas por pessoas. Altera as condições e observa quantas partículas acumula cada nível.</p>
+<div class="cc">
+<label for="cc">Microplásticos na água: <b id="ccv">0</b> partículas/L <input type="range" id="cc" min="0" max="250" step="25" value="100"></label>
+<label for="cd">Dias de exposição: <b id="cdv">7</b> <input type="range" id="cd" min="1" max="14" value="7"></label>
+<label><input type="checkbox" id="cl"> Depois da exposição, passar 7 dias em água limpa</label>
+</div>
+<div id="chain"></div>
+<p class="sub" id="cnote"></p>
+<p class="sub">Modelo didático: cada nível acumula 2,4 vezes a carga do nível anterior, porque come vários indivíduos contaminados e não elimina tudo. Na água limpa, os organismos maiores eliminam as partículas mais devagar.</p>
+<div id="quiz2" style="margin-top:14px"></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const VARS=[
+["Concentração de microplásticos na água","ind","É o fator que o investigador altera de propósito."],
+["Nº de partículas no sistema digestivo","dep","É o que se mede e depende do fator alterado."],
+["Temperatura da água","ctl","Tem de ser igual em todos os aquários."],
+["Duração da exposição","ctl","Tem de ser igual em todos os aquários."],
+["Espécie e tamanho dos mexilhões","ctl","Mantém-se igual para comparar de forma justa."],
+["Salinidade da água","ctl","Mantém-se igual em todos os aquários."]];
+const LAB={ind:"Variável independente",dep:"Variável dependente",ctl:"Variável controlada"};
+$("vars").innerHTML=VARS.map((v,i)=>`<div class="row"><span>${v[0]}</span><select id="v${i}"><option value="">Escolher…</option>${Object.entries(LAB).map(([k,t])=>`<option value="${k}">${t}</option>`).join("")}</select><p class="fb" id="f${i}"></p></div>`).join("");
+$("chk1").onclick=()=>{let ok=0;
+VARS.forEach((v,i)=>{const a=$("v"+i).value,f=$("f"+i);
+if(!a){f.textContent="";f.className="fb";return}
+if(a===v[1]){ok++;f.className="fb ok";f.textContent="Correto. "+v[2]}
+else{f.className="fb bad";f.textContent="Ainda não. Pensa no que é alterado, medido ou mantido igual."}});
+$("res1").textContent=ok+" de "+VARS.length+" corretas";
+if(ok===VARS.length)$("s2").classList.remove("locked")};
+
+const CONC=[0,25,100,250];
+$("tanks").innerHTML=CONC.map((c,i)=>`<div class="tank"><b>Aquário ${"ABCD"[i]}</b>
+<label for="c${i}">Microplásticos (partículas/L)</label><select id="c${i}">${CONC.map(x=>`<option ${x===c?"selected":""}>${x}</option>`).join("")}</select>
+<label for="r${i}">Grupo</label><select id="r${i}"><option value="">Escolher…</option><option value="ctl">Controlo</option><option value="exp">Experimental</option></select></div>`).join("");
+$("nm").oninput=()=>$("nmv").textContent=$("nm").value;
+
+function randn(){return Math.sqrt(-2*Math.log(1-Math.random()))*Math.cos(2*Math.PI*Math.random())}
+let data=null;
+$("run").onclick=()=>{
+const n=+$("nm").value,m=[],tk=[];
+for(let i=0;i<4;i++)tk.push({id:"ABCD"[i],c:+$("c"+i).value,r:$("r"+i).value});
+if(tk.some(t=>!t.r)){$("msgs").innerHTML='<p class="bad">Classifica os quatro aquários antes de executar.</p>';return}
+tk.forEach(t=>{const mu=3+0.15*t.c,sd=0.3*mu+1;t.v=Array.from({length:n},()=>Math.max(0,Math.round(mu+sd*randn())));
+t.mean=t.v.reduce((a,b)=>a+b,0)/n;t.sd=Math.sqrt(t.v.reduce((a,b)=>a+(b-t.mean)**2,0)/Math.max(1,n-1))});
+data={tk,n};
+const msgs=[],ctl=tk.filter(t=>t.r==="ctl"),zero=tk.filter(t=>t.c===0);
+if(!zero.length)msgs.push(["bad","Nenhum aquário tem 0 partículas/L. Sem esse grupo de comparação não consegues saber o que é efeito dos microplásticos."]);
+tk.forEach(t=>{if(t.c===0&&t.r==="exp")msgs.push(["bad",`Aquário ${t.id}: não tem microplásticos, por isso é o grupo de controlo.`]);
+if(t.c>0&&t.r==="ctl")msgs.push(["bad",`Aquário ${t.id}: recebe microplásticos, logo é experimental. O controlo não recebe o fator testado.`])});
+if(new Set(tk.map(t=>t.c)).size<tk.length)msgs.push(["warn","Há aquários com a mesma concentração: repetir condições é útil, mas aqui perdes níveis para comparar."]);
+if(n<3)msgs.push(["warn","Com menos de 3 mexilhões por aquário, o acaso pode enganar-te. Repara na dispersão dos resultados."]);
+if(!msgs.length)msgs.push(["ok","Desenho bem montado: tens controlo, vários níveis do fator e réplicas."]);
+$("msgs").innerHTML=msgs.map(x=>`<p class="${x[0]}">${x[1]}</p>`).join("");
+show();$("s3").classList.remove("locked");$("s4").classList.remove("locked");$("s5").classList.remove("locked");quiz();$("cc").value=Math.max(...tk.map(t=>t.c));cr()};
+
+function show(){const {tk,n}=data;
+const rows=tk.map(t=>`<tr><td>${t.id}</td><td>${t.c}</td><td>${t.r==="ctl"?"Controlo":"Experimental"}</td><td>${t.v.join(", ")}</td><td>${t.mean.toFixed(1)} ± ${t.sd.toFixed(1)}</td></tr>`).join("");
+const mx=Math.max(...tk.map(t=>t.mean+t.sd),10),W=560,H=240,bw=70,x0=50;
+const y=v=>H-30-(v/mx)*(H-50);
+const bars=tk.map((t,i)=>{const x=x0+30+i*125,col=t.r==="ctl"?"var(--ctl)":"var(--exp)";
+return `<rect x="${x}" y="${y(t.mean)}" width="${bw}" height="${H-30-y(t.mean)}" fill="${col}"/><line x1="${x+bw/2}" x2="${x+bw/2}" y1="${y(t.mean+t.sd)}" y2="${y(Math.max(0,t.mean-t.sd))}" stroke="var(--ink)" stroke-width="2"/><text x="${x+bw/2}" y="${H-12}" text-anchor="middle">${t.id} (${t.c}/L)</text>`}).join("");
+$("out").innerHTML=`<div class="tw"><table><tr><th>Aquário</th><th>Partículas/L</th><th>Grupo</th><th>Partículas por mexilhão (n=${n})</th><th>Média ± desvio-padrão</th></tr>${rows}</table></div>
+<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Média de partículas por aquário"><line x1="${x0}" x2="${x0}" y1="10" y2="${H-30}" stroke="var(--ink)"/><line x1="${x0}" x2="${W-10}" y1="${H-30}" y2="${H-30}" stroke="var(--ink)"/><text x="4" y="16">partículas</text>${bars}</svg>
+<p class="sub">Azul: controlo. Laranja: experimental. As barras verticais mostram o desvio-padrão.</p>`}
+
+const QS=[
+["Porque é que o grupo de controlo não recebe microplásticos?",["Para poupar material","Para ter uma referência sem o fator testado","Para os mexilhões sobreviverem mais"],1,"O controlo permite comparar e saber se a diferença se deve mesmo ao fator testado."],
+["Porque é que se usam vários mexilhões em cada aquário?",["Para reduzir o efeito das diferenças individuais e do acaso","Para aumentar a concentração de microplásticos","Para mudar a variável dependente"],0,"Mais réplicas tornam a média mais fiável. Compara a dispersão com n pequeno e n grande."],
+["Se o teu estudo mudasse só a temperatura entre aquários, qual seria a variável independente?",["O número de partículas no mexilhão","A concentração de microplásticos","A temperatura da água"],2,"É o fator que o investigador altera de propósito."],
+["O aquário de controlo tem algumas partículas. Isso invalida o estudo?",["Sim, tem de ser sempre zero","Não, pode haver contaminação de fundo, e o controlo serve para a medir","Sim, os mexilhões estão doentes"],1,"No mundo real há contaminação de fundo; o controlo mostra o valor de base com que comparar."]];
+function quiz(){$("quiz").innerHTML=QS.map((q,i)=>`<div style="margin-bottom:14px"><p><b>${q[0]}</b></p>${q[1].map((o,j)=>`<button class="opt" data-q="${i}" data-o="${j}">${o}</button>`).join("")}<p class="fb" id="qf${i}"></p></div>`).join("");
+document.querySelectorAll(".opt:not(.o2)").forEach(b=>b.onclick=()=>{const i=+b.dataset.q,j=+b.dataset.o,f=$("qf"+i);
+if(j===QS[i][2]){f.className="fb ok";f.textContent="Correto. "+QS[i][3]}else{f.className="fb bad";f.textContent="Tenta outra vez."}})}
+const FAC=2.4,DEP=[.3,.5,.7],LV=[["🦪","Mexilhão"],["🐟","Dourada (come mexilhões)"],["🧑","Ser humano (come douradas)"]];
+function cr(){const c=+$("cc").value,d=+$("cd").value,cl=$("cl").checked;
+$("ccv").textContent=c;$("cdv").textContent=d;
+const p=(3+0.15*c)*d/7,raw=[p,p*FAC,p*FAC*FAC],v=cl?raw.map((x,i)=>x*DEP[i]):raw,mx=Math.max(...raw,1);
+const f=x=>x.toLocaleString("pt-PT",{maximumFractionDigits:0});
+$("chain").innerHTML=LV.map((l,i)=>`<div class="lv"><span class="em" aria-hidden="true">${l[0]}</span><div><b>${l[1]}</b><div class="bar"><i style="width:${v[i]/mx*100}%"></i></div></div><span class="num">${f(v[i])}</span></div>`).join("");
+$("cnote").textContent="Partículas acumuladas por indivíduo. O ser humano tem "+(v[2]/Math.max(v[0],0.01)).toLocaleString("pt-PT",{maximumFractionDigits:1})+" vezes a carga de um mexilhão."}
+["cc","cd","cl"].forEach(i=>$(i).oninput=cr);
+const Q2=[
+["Como se chama o aumento da concentração de um poluente ao longo da cadeia alimentar?",["Biodegradação","Biomagnificação","Fotossíntese"],1,"A biomagnificação faz com que os consumidores de topo tenham cargas mais elevadas."],
+["Porque é que o consumidor de topo acumula mais partículas?",["Porque come muitos indivíduos já contaminados","Porque bebe mais água","Porque as partículas são mais pesadas nele"],0,"Cada predador acumula as partículas de todas as presas que come."],
+["Ao mexeres na concentração da água e observares os três níveis, qual é a variável dependente?",["A concentração de microplásticos na água","O nº de partículas acumuladas em cada organismo","O número de dias"],1,"É o que medes. A concentração é a variável independente."],
+["Em água limpa, qual dos níveis elimina as partículas mais devagar neste modelo?",["O mexilhão","A dourada","O ser humano"],2,"Por isso reduzir os microplásticos na origem é mais eficaz do que esperar que desapareçam."]];
+$("quiz2").innerHTML=Q2.map((q,i)=>`<div style="margin-bottom:14px"><p><b>${q[0]}</b></p>${q[1].map((o,j)=>`<button class="opt o2" data-q="${i}" data-o="${j}">${o}</button>`).join("")}<p class="fb" id="rf${i}"></p></div>`).join("");
+document.querySelectorAll(".o2").forEach(b=>b.onclick=()=>{const i=+b.dataset.q,j=+b.dataset.o,f=$("rf"+i);
+if(j===Q2[i][2]){f.className="fb ok";f.textContent="Correto. "+Q2[i][3]}else{f.className="fb bad";f.textContent="Tenta outra vez."}});
+cr();
+$("again").onclick=()=>{$("run").click()};
+</script>
+</body>
+</html>
